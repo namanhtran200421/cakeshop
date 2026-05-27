@@ -24,7 +24,6 @@ const corsOptions = {
 
 // CORS must be before routes
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
 
 // Stripe webhook must stay before express.json()
 app.post(
@@ -47,7 +46,7 @@ app.get("/", (_, res) => res.send("Backend running"));
 mongoose
   .connect(process.env.MONGO_DB as string)
   .then(() => console.log("DB connected"))
-  .catch(() => console.log("DB connection error"));
+  .catch((err) => console.log("DB connection error", err));
 
 app.listen(process.env.PORT_NO, () =>
   console.log("Server running on", process.env.PORT_NO)
