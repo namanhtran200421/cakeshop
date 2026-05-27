@@ -63,7 +63,9 @@ const delete_item_in_cart = async function (req, res) {
     try {
         const { guest_id, product_id } = req.params;
         if (!guest_id || !product_id) {
-            return res.status(400).json({ message: "Missing guest_id or product_id" });
+            return res
+                .status(400)
+                .json({ message: "Missing guest_id or product_id" });
         }
         const cart = await cart_model_1.default.findOne({ guest_id }).populate("items.product_id");
         if (!cart) {
@@ -74,7 +76,7 @@ const delete_item_in_cart = async function (req, res) {
         // Recalculate total AFTER deletion
         let newTotal = 0;
         for (const item of cart.items) {
-            const price = item.product_id.product_price; // populated so safe
+            const price = item.product_id.product_price;
             newTotal += item.cart_quantity * price;
         }
         cart.total_price = newTotal;
