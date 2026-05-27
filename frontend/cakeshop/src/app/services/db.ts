@@ -21,9 +21,7 @@ export class Db {
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       this.baseUrl = 'http://localhost:4040';
     } else {
-      this.baseUrl = 'https://rachel-cake-shop.onrender.com'
-
-';
+      this.baseUrl = 'https://rachel-cake-shop.onrender.com/api';
     }
 
     console.log('DbService using backend:', this.baseUrl);

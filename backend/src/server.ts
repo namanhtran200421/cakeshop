@@ -1,37 +1,42 @@
 require("dotenv").config();
+
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import { stripeWebhook } from "./router/webhook";
 
-
+import contact_router from "./router/contact_router";
+import product_router from "./router/product_router";
+import cart_router from "./router/cart_router";
+import order_router from "./router/order_router";
 
 const app = express();
 
-// 1. STRIPE WEBHOOK FIRST
+const corsOptions = {
+  origin: [
+    "http://localhost:4200",
+    "https://rachel-cake-shop.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+};
+
+// CORS must be before routes
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
+// Stripe webhook must stay before express.json()
 app.post(
   "/stripe/webhook",
   express.raw({ type: "application/json" }),
   stripeWebhook
 );
 
-// 2. NORMAL JSON PARSING FOR THE REST
+// Normal JSON parsing for the rest
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: ["http://localhost:4200", "https://rachel-cake-shop.vercel.app"],
-    methods: "GET, POST, PUT, DELETE",
-    credentials: true,
-  })
-);
-
-// All API routers
-import contact_router from "./router/contact_router";
-import product_router from "./router/product_router";
-import cart_router from "./router/cart_router";
-import order_router from "./router/order_router";
-
+// API routers
 app.use("/api", contact_router);
 app.use("/api", product_router);
 app.use("/api", cart_router);
